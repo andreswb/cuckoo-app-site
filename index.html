@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cuckoo Bird — Grow up in a stranger's nest</title>
+<meta name="description" content="Play a cuckoo chick: hatch, beg, grow huge, and fledge across 12 real birds' nests. Collect skins, ace nature quizzes, and discover why there are no bad birds. Free, ad-free, no tracking." />
+<style>
+  :root{
+    --cream:#f8f5ec; --cream-2:#fffdf7; --ink:#2c2014; --muted:#6d6250;
+    --brown:#7a5230; --brown-soft:#9a6c44; --gold:#e0b33a; --sky:#bfe0ef;
+    --leaf:#6f9a55; --line:#e7ddca; --shadow:0 10px 30px rgba(60,40,20,.12);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--cream); line-height:1.6;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 22px;}
+  a{color:var(--brown); text-decoration:none;}
+  h1,h2,h3{line-height:1.2; color:var(--ink); margin:0 0 .5em;}
+  h1{font-size:clamp(2.1rem,5vw,3.4rem); font-weight:800; letter-spacing:-.02em;}
+  h2{font-size:clamp(1.5rem,3.5vw,2.1rem); font-weight:800; margin-top:0;}
+  h3{font-size:1.15rem; font-weight:700;}
+  p{margin:0 0 1em;}
+  .muted{color:var(--muted);}
+
+  /* Top bar */
+  header.bar{
+    position:sticky; top:0; z-index:20; backdrop-filter:saturate(160%) blur(10px);
+    background:rgba(248,245,236,.82); border-bottom:1px solid var(--line);
+  }
+  .bar .wrap{display:flex; align-items:center; justify-content:space-between; height:62px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.15rem;}
+  .brand .logo{font-size:1.4rem;}
+  .lang{display:flex; gap:6px;}
+  .lang button{
+    font:inherit; font-weight:700; cursor:pointer; border:1px solid var(--line);
+    background:var(--cream-2); color:var(--muted); padding:6px 12px; border-radius:999px;
+  }
+  .lang button.active{background:var(--brown); color:#fff; border-color:var(--brown);}
+
+  /* Hero */
+  .hero{
+    background:linear-gradient(180deg,var(--sky),var(--cream) 78%);
+    padding:64px 0 48px; text-align:center; position:relative; overflow:hidden;
+  }
+  .hero .egg{font-size:64px; line-height:1; margin-bottom:8px;}
+  .hero .tagline{font-size:1.25rem; color:var(--brown); font-weight:700; margin-bottom:.2em;}
+  .hero p.lead{font-size:1.12rem; max-width:620px; margin:0 auto 1.6em;}
+  .cta{
+    display:inline-flex; align-items:center; gap:10px; background:var(--brown); color:#fff;
+    font-weight:800; padding:14px 26px; border-radius:999px; box-shadow:var(--shadow);
+  }
+  .cta.secondary{background:var(--cream-2); color:var(--brown); border:1px solid var(--line); box-shadow:none;}
+  .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+  .pills{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:22px;}
+  .pill{background:var(--cream-2); border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:.9rem; font-weight:600; color:var(--muted);}
+
+  /* Sections */
+  section{padding:56px 0;}
+  section.alt{background:var(--cream-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .section-head{text-align:center; max-width:680px; margin:0 auto 36px;}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px;}
+  .card{
+    background:var(--cream-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; box-shadow:var(--shadow);
+  }
+  .card .ico{font-size:30px; margin-bottom:10px;}
+  .card h3{margin-bottom:.35em;}
+  .card p{margin:0; color:var(--muted); font-size:.97rem;}
+
+  .loop{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:10px;}
+  .loop .step{
+    background:var(--cream-2); border:1px solid var(--line); border-radius:14px;
+    padding:12px 18px; font-weight:700; display:flex; align-items:center; gap:8px;
+  }
+  .loop .arrow{align-self:center; color:var(--brown-soft); font-weight:800;}
+
+  /* Privacy */
+  .privacy-list{list-style:none; padding:0; margin:0; display:grid; gap:12px;}
+  .privacy-list li{
+    background:var(--cream-2); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .privacy-list .tick{color:var(--leaf); font-weight:800; flex:0 0 auto;}
+  .note{font-size:.92rem; color:var(--muted); margin-top:18px;}
+
+  footer{padding:36px 0 48px; text-align:center; color:var(--muted); font-size:.9rem;}
+  footer .brand{justify-content:center; margin-bottom:8px; color:var(--ink);}
+
+  [data-lang]{display:none;}
+  body[data-active="en"] [data-lang="en"]{display:revert;}
+  body[data-active="de"] [data-lang="de"]{display:revert;}
+  /* keep block elements as block when shown */
+  body[data-active="en"] li[data-lang="en"],
+  body[data-active="de"] li[data-lang="de"]{display:flex;}
+  body[data-active="en"] div[data-lang="en"],
+  body[data-active="de"] div[data-lang="de"]{display:revert;}
+</style>
+</head>
+<body data-active="en">
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand"><span class="logo">🐦</span> Cuckoo Bird</div>
+    <div class="lang" role="group" aria-label="Language">
+      <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+      <button id="btn-de" onclick="setLang('de')">DE</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div class="egg">🥚</div>
+    <span data-lang="en"><h1>Cuckoo Bird</h1></span>
+    <span data-lang="de"><h1>Cuckoo Bird</h1></span>
+
+    <div class="tagline" data-lang="en">Grow up in a stranger's nest.</div>
+    <div class="tagline" data-lang="de">Wachse im Nest eines Fremden auf.</div>
+
+    <p class="lead" data-lang="en">Play a cuckoo chick: hatch, beg your unwitting foster parents into feeding you, grow comically huge, then fledge and fly off to the next nest. Quick, satisfying loops built on one of nature's most astonishing true stories.</p>
+    <p class="lead" data-lang="de">Schlüpfe als Kuckucksküken: bettle deine ahnungslosen Zieheltern um Futter an, wachse zu absurder Größe heran und flieg aus zum nächsten Nest. Kurze, befriedigende Runden – inspiriert von einer der erstaunlichsten wahren Geschichten der Natur.</p>
+
+    <div class="cta-row">
+      <a class="cta" href="#features" data-lang="en">Discover the game →</a>
+      <a class="cta" href="#features" data-lang="de">Spiel entdecken →</a>
+      <a class="cta secondary" href="#privacy" data-lang="en">Privacy</a>
+      <a class="cta secondary" href="#privacy" data-lang="de">Datenschutz</a>
+    </div>
+
+    <div class="pills">
+      <span class="pill" data-lang="en">Free</span><span class="pill" data-lang="de">Kostenlos</span>
+      <span class="pill" data-lang="en">No ads</span><span class="pill" data-lang="de">Keine Werbung</span>
+      <span class="pill" data-lang="en">No tracking</span><span class="pill" data-lang="de">Kein Tracking</span>
+      <span class="pill" data-lang="en">Ages 9+</span><span class="pill" data-lang="de">Ab 9 Jahren</span>
+    </div>
+  </div>
+</div>
+
+<!-- LOOP -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 data-lang="en">One loop, endless nests</h2>
+      <h2 data-lang="de">Eine Runde, unendlich viele Nester</h2>
+      <p class="muted" data-lang="en">Every mechanic is real cuckoo behavior — just a little cartoonish.</p>
+      <p class="muted" data-lang="de">Jede Spielmechanik beruht auf echtem Kuckucksverhalten – nur etwas verspielter.</p>
+    </div>
+    <div class="loop" data-lang="en">
+      <div class="step">🥚 Hatch</div><span class="arrow">→</span>
+      <div class="step">🐣 Beg</div><span class="arrow">→</span>
+      <div class="step">📈 Grow</div><span class="arrow">→</span>
+      <div class="step">🪶 Fledge</div><span class="arrow">→</span>
+      <div class="step">🪺 Next nest</div>
+    </div>
+    <div class="loop" data-lang="de">
+      <div class="step">🥚 Schlüpfen</div><span class="arrow">→</span>
+      <div class="step">🐣 Betteln</div><span class="arrow">→</span>
+      <div class="step">📈 Wachsen</div><span class="arrow">→</span>
+      <div class="step">🪶 Ausfliegen</div><span class="arrow">→</span>
+      <div class="step">🪺 Nächstes Nest</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="alt" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 data-lang="en">What makes it sing</h2>
+      <h2 data-lang="de">Was es besonders macht</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="ico">🪺</div>
+        <div data-lang="en"><h3>12 real host birds</h3><p>Raise your chick in the nests of 12 genuine cuckoo hosts, from the tiny reed warbler to the brambling — each with its own look and challenge.</p></div>
+        <div data-lang="de"><h3>12 echte Wirtsvögel</h3><p>Ziehe dein Küken in den Nestern von 12 echten Kuckuckswirten groß – vom winzigen Teichrohrsänger bis zum Bergfink, jeder mit eigenem Aussehen und Schwierigkeitsgrad.</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">🎨</div>
+        <div data-lang="en"><h3>Collect &amp; customize</h3><p>Earn coins by playing and spend them on collectible cuckoo skins and cozy nest decorations. Cosmetic only — never pay-to-win.</p></div>
+        <div data-lang="de"><h3>Sammeln &amp; gestalten</h3><p>Verdiene Münzen durchs Spielen und gib sie für sammelbare Kuckuck-Looks und gemütliche Nestdekorationen aus. Rein kosmetisch – niemals Pay-to-Win.</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">🔥</div>
+        <div data-lang="en"><h3>Daily streaks &amp; challenges</h3><p>A fresh daily challenge and a growing login streak keep the rewards coming. Built to bring you back, never to nag.</p></div>
+        <div data-lang="de"><h3>Tägliche Serien &amp; Aufgaben</h3><p>Eine neue Tagesaufgabe und eine wachsende Login-Serie sorgen für stetigen Nachschub an Belohnungen – einladend statt nervig.</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">🎓</div>
+        <div data-lang="en"><h3>Learn &amp; earn a diploma</h3><p>Six beautifully written chapters on real cuckoo biology, each with a short quiz. Ace them all to earn a shareable "Small Ornithologist" diploma.</p></div>
+        <div data-lang="de"><h3>Lernen &amp; Diplom verdienen</h3><p>Sechs schön geschriebene Kapitel über echte Kuckucksbiologie, jeweils mit kurzem Quiz. Bestehe alle und erhalte ein teilbares „Kleiner Ornithologe“-Diplom.</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">💛</div>
+        <div data-lang="en"><h3>There are no bad birds</h3><p>Cuckoo celebrates nature exactly as it is. No blood, no cruelty — just a marvel of evolution doing what it was born to do.</p></div>
+        <div data-lang="de"><h3>Es gibt keine bösen Vögel</h3><p>Cuckoo feiert die Natur genau so, wie sie ist. Kein Blut, keine Grausamkeit – nur ein Wunder der Evolution, das tut, wofür es geboren wurde.</p></div>
+      </div>
+      <div class="card">
+        <div class="ico">🚫</div>
+        <div data-lang="en"><h3>Free, fair &amp; ad-free</h3><p>No ads, no paywalls, and coins can only be earned — never bought. An optional one-time tip is the only purchase.</p></div>
+        <div data-lang="de"><h3>Kostenlos, fair &amp; werbefrei</h3><p>Keine Werbung, keine Bezahlschranken, und Münzen lassen sich nur erspielen – nie kaufen. Ein optionales einmaliges Trinkgeld ist der einzige Kauf.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 data-lang="en">Free, and made with care</h2>
+      <h2 data-lang="de">Kostenlos und mit Sorgfalt gemacht</h2>
+      <p class="muted" data-lang="en">Cuckoo is genuinely free. If it made you smile or taught you something, a one-time "Supporter" tip unlocks a golden badge and a heartfelt thank-you. Entirely optional.</p>
+      <p class="muted" data-lang="de">Cuckoo ist wirklich kostenlos. Wenn es dich zum Lächeln gebracht oder dir etwas beigebracht hat, schaltet ein einmaliges „Supporter“-Trinkgeld ein goldenes Abzeichen und ein herzliches Dankeschön frei. Völlig freiwillig.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="alt" id="privacy">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 data-lang="en">Privacy</h2>
+      <h2 data-lang="de">Datenschutz</h2>
+      <p class="muted" data-lang="en">Short version: we don't collect anything about you. Everything stays on your device.</p>
+      <p class="muted" data-lang="de">Kurz gesagt: Wir sammeln nichts über dich. Alles bleibt auf deinem Gerät.</p>
+    </div>
+
+    <ul class="privacy-list">
+      <li data-lang="en"><span class="tick">✓</span><span><strong>No data collection.</strong> Cuckoo Bird collects no personal data and contains no analytics or tracking SDKs.</span></li>
+      <li data-lang="de"><span class="tick">✓</span><span><strong>Keine Datenerfassung.</strong> Cuckoo Bird erhebt keine personenbezogenen Daten und enthält keine Analyse- oder Tracking-SDKs.</span></li>
+
+      <li data-lang="en"><span class="tick">✓</span><span><strong>Everything stays local.</strong> Your progress — coins, loops, field guide, quiz results, and the name you enter for your diploma — is stored only on your device.</span></li>
+      <li data-lang="de"><span class="tick">✓</span><span><strong>Alles bleibt lokal.</strong> Dein Fortschritt – Münzen, Runden, Feldführer, Quizergebnisse und der Name für dein Diplom – wird ausschließlich auf deinem Gerät gespeichert.</span></li>
+
+      <li data-lang="en"><span class="tick">✓</span><span><strong>No account, no sign-in.</strong> You can play everything without creating an account or providing any personal information.</span></li>
+      <li data-lang="de"><span class="tick">✓</span><span><strong>Kein Konto, keine Anmeldung.</strong> Du kannst alles spielen, ohne ein Konto zu erstellen oder persönliche Daten anzugeben.</span></li>
+
+      <li data-lang="en"><span class="tick">✓</span><span><strong>No ads.</strong> There are no advertisements and no ad networks of any kind.</span></li>
+      <li data-lang="de"><span class="tick">✓</span><span><strong>Keine Werbung.</strong> Es gibt keinerlei Anzeigen und keine Werbenetzwerke.</span></li>
+
+      <li data-lang="en"><span class="tick">✓</span><span><strong>Purchases handled by Apple.</strong> The optional one-time "Supporter" purchase is processed securely by the App Store. We never see or store your payment details.</span></li>
+      <li data-lang="de"><span class="tick">✓</span><span><strong>Käufe über Apple.</strong> Der optionale einmalige „Supporter“-Kauf wird sicher über den App Store abgewickelt. Wir sehen oder speichern deine Zahlungsdaten nie.</span></li>
+
+      <li data-lang="en"><span class="tick">✓</span><span><strong>Family-friendly.</strong> Designed to be appropriate for ages 9 and up, with no inappropriate content.</span></li>
+      <li data-lang="de"><span class="tick">✓</span><span><strong>Familienfreundlich.</strong> Geeignet ab 9 Jahren, ohne unangemessene Inhalte.</span></li>
+    </ul>
+
+    <p class="note" data-lang="en">Because no personal data leaves your device, there is nothing for us to share, sell, or lose. Questions about privacy? Email <a href="mailto:bandurria.apps@gmail.com">bandurria.apps@gmail.com</a>.</p>
+    <p class="note" data-lang="de">Da keine personenbezogenen Daten dein Gerät verlassen, gibt es für uns nichts zu teilen, zu verkaufen oder zu verlieren. Fragen zum Datenschutz? Schreib an <a href="mailto:bandurria.apps@gmail.com">bandurria.apps@gmail.com</a>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand"><span class="logo">🐦</span> Cuckoo Bird</div>
+    <p data-lang="en" class="muted">Hatch · Grow · Fledge · Repeat — and learn to love nature exactly as it is.</p>
+    <p data-lang="de" class="muted">Schlüpfen · Wachsen · Ausfliegen · Wiederholen – und die Natur lieben, genau wie sie ist.</p>
+    <p data-lang="en" class="muted">Made in Switzerland 🇨🇭 with care.</p>
+    <p data-lang="de" class="muted">Hergestellt in der Schweiz 🇨🇭 mit Sorgfalt.</p>
+    <p class="muted">© <span id="year"></span> Andres Wetzel · <a href="mailto:bandurria.apps@gmail.com">bandurria.apps@gmail.com</a></p>
+  </div>
+</footer>
+
+<script>
+  function setLang(lang){
+    document.body.setAttribute('data-active', lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.getElementById('btn-en').classList.toggle('active', lang==='en');
+    document.getElementById('btn-de').classList.toggle('active', lang==='de');
+  }
+  // Respect browser language on first load.
+  (function(){
+    var pref = (navigator.language || 'en').toLowerCase().startsWith('de') ? 'de' : 'en';
+    setLang(pref);
+    document.getElementById('year').textContent = new Date().getFullYear();
+  })();
+</script>
+</body>
+</html>
